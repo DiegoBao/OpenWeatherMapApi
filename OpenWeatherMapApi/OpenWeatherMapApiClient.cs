@@ -15,12 +15,14 @@ namespace Drakais.OpenWeatherMapApi
         private string url;
         private string apiKey;
         private Units units;
+        private string language;
 
-        public OpenWeatherMapApiClient(string url, string apiKey, Units units)
+        public OpenWeatherMapApiClient(string url, string apiKey, Units units = Units.Metric, string language = null)
         {
             this.url = url;
             this.apiKey = apiKey;
             this.units = units;
+            this.language = language;
 
             this.Initialize();
         }
@@ -39,7 +41,9 @@ namespace Drakais.OpenWeatherMapApi
 
         public async Task<WeatherInfo> GetWeaterByCityNameAsync(string name)
         {
-            var result = await client.GetAsync(string.Format("/data/2.5/weather?q={0}&units={1}", name, this.units.ToString().ToLowerInvariant()));
+            string url = string.Format("/data/2.5/weather?q={0}&units={1}", name, this.units.ToString().ToLowerInvariant());
+            url = this.AddLanguage(url);
+            var result = await client.GetAsync(url);
             return await GetWeatherInfo(result);
         }
 
@@ -58,18 +62,85 @@ namespace Drakais.OpenWeatherMapApi
             }
         }
 
-        public async Task<WeatherInfo> GetWeatherByLocation(double longitude, double latitude)
+        public async Task<WeatherInfo> GetWeatherByLocationAsync(double longitude, double latitude)
         {
             //Seaching by geographic coordinats api.openweathermap.org/data/2.5/weather?lat=35&lon=139
-            var result = await client.GetAsync(string.Format("/data/2.5/weather?lat={0}&long={1}&units={2}", latitude, longitude, this.units.ToString().ToLowerInvariant()));
+            string url = string.Format("/data/2.5/weather?lat={0}&long={1}&units={2}", latitude, longitude, this.units.ToString().ToLowerInvariant());
+            url = this.AddLanguage(url);
+            var result = await client.GetAsync(url);
             return await GetWeatherInfo(result);
         }
         
-        public async Task<WeatherInfo> GetWeatherByCityId(int cityId)
+        public async Task<WeatherInfo> GetWeatherByCityIdAsync(int cityId)
         {
             //Seaching by city ID api.openweathermap.org/data/2.5/weather?id=2172797
-            var result = await client.GetAsync(string.Format("/data/2.5/weather?id={0}&units={1}", cityId, this.units.ToString().ToLowerInvariant()));
+            string url = string.Format("/data/2.5/weather?id={0}&units={1}", cityId, this.units.ToString().ToLowerInvariant());
+            url = this.AddLanguage(url);
+            var result = await client.GetAsync(url);
             return await GetWeatherInfo(result);
+        }
+
+        public async Task<ForecastInfo> GetForecastByCityAsync(string city, int? days = null)
+        {
+            string url = string.Format("/data/2.5/forecast?q={0}&units={1}", city, this.units.ToString().ToLowerInvariant());
+            if (days.HasValue)
+            {
+                url = string.Format("{0}&cnt={1}", url, days.Value);
+            }
+            url = this.AddLanguage(url);
+            var result = await client.GetAsync(url);
+            return await GetForecastInfo(result);
+        }
+
+        public async Task<ForecastInfo> GetForecastByCityIdAsync(int cityId, int? days = null)
+        {
+            string url = string.Format("/data/2.5/forecast?id={0}&units={1}", cityId, this.units.ToString().ToLowerInvariant());
+            if (days.HasValue)
+            {
+                url = string.Format("{0}&cnt={1}", url, days.Value);
+            }
+            url = this.AddLanguage(url);
+            var result = await client.GetAsync(url);
+            return await GetForecastInfo(result);
+        }
+
+        public async Task<ForecastInfo> GetForecastByLocationAsync(double latitude, double longitude, int? days = null)
+        {
+            string url = string.Format("/data/2.5/forecast?lat={0}&long={1}&units={2}", latitude, longitude, this.units.ToString().ToLowerInvariant());
+            if (days.HasValue)
+            {
+                url = string.Format("{0}&cnt={1}", url, days.Value);
+            }
+            url = this.AddLanguage(url);
+            var result = await client.GetAsync(url);
+            return await GetForecastInfo(result);
+        }
+
+        private string AddLanguage(string url)
+        {
+            if (!string.IsNullOrWhiteSpace(this.language))
+            {
+                return string.Format("{0}&lang={1}", url, this.language);
+            }
+            else
+            {
+                return url;
+            }
+        }
+
+        private async Task<ForecastInfo> GetForecastInfo(HttpResponseMessage result)
+        {
+            if (result.IsSuccessStatusCode)
+            {
+                var json = await result.Content.ReadAsStringAsync();
+                JsonSerializerSettings settings = new JsonSerializerSettings();
+                settings.Culture = new System.Globalization.CultureInfo("en-us");
+                return JsonConvert.DeserializeObject<ForecastInfo>(json, settings);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

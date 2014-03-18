@@ -7,12 +7,6 @@ using System.Threading.Tasks;
 
 namespace Drakais.OpenWeatherMapApi
 {
-    //public class Coord
-    //{
-    //    public double lon { get; set; }
-    //    public double lat { get; set; }
-    //}
-
     public class City
     {
         public int Id { get; set; }
@@ -33,7 +27,7 @@ namespace Drakais.OpenWeatherMapApi
     public class Forecast
     {
         [JsonProperty("dt"), JsonConverter(typeof(Epoch2DateTime))]
-        public int Timestamp { get; set; }
+        public DateTime Timestamp { get; set; }
         public Main Main { get; set; }
         public List<Weather> Weather { get; set; }
         public Clouds Clouds { get; set; }

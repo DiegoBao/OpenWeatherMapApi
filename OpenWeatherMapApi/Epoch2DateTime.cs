@@ -18,14 +18,24 @@ namespace Drakais.OpenWeatherMapApi
             var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             long value = (long)reader.Value; // long.Parse(reader.ReadAsString());
-            return epoch.AddSeconds(value).ToLocalTime();
+            if (reader.Value != null)
+            {
+                return epoch.AddSeconds(value).ToLocalTime();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            DateTime date = (DateTime)value;
-            var epoch = (date.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
-            writer.WriteRawValue(epoch.ToString());
+            if (value != null)
+            {
+                DateTime date = (DateTime)value;
+                var epoch = (date.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
+                writer.WriteRawValue(epoch.ToString());
+            }
         }
     }
 }

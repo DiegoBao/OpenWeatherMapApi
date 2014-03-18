@@ -51,13 +51,13 @@ namespace Drakais.OpenWeatherMapApi
         public double Temperature { get; set; }
 
         [JsonProperty("pressure")]
-        public int Pressure { get; set; }
+        public double Pressure { get; set; }
         [JsonProperty("temp_min")]
         public double? MinTemperature { get; set; }
         [JsonProperty("temp_max")]
         public double? MaxTemperature { get; set; }
         [JsonProperty("humidity")]
-        public int Humidity { get; set; }
+        public double Humidity { get; set; }
         public double? sea_level { get; set; }
         public double? grnd_level { get; set; }
         public double? temp_kf { get; set; }
@@ -73,7 +73,7 @@ namespace Drakais.OpenWeatherMapApi
 
     public class Clouds
     {
-        public int All { get; set; }
+        public double All { get; set; }
     }
 
     public class WeatherInfo
