@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Epoch2DateTime.cs" />
+    <Compile Include="ForecastInfo.cs" />
     <Compile Include="Units.cs" />
     <Compile Include="OpenWeatherMapApiClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

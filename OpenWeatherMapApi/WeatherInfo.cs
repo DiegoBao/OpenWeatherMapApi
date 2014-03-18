@@ -18,28 +18,31 @@ namespace Drakais.OpenWeatherMapApi
 
     public class Sys
     {
-        public double message { get; set; }
-        public string country { get; set; }
+        public double? Message { get; set; }
+        public string Country { get; set; }
+
         [JsonConverter(typeof(Epoch2DateTime))]
-        public DateTime Sunrise
+        public DateTime? Sunrise
         {
             get;
             set;
         }
         [JsonConverter(typeof(Epoch2DateTime))]
-        public DateTime Sunset
+        public DateTime? Sunset
         {
             get;
             set;
         }
+
+        public string pod { get; set; }
     }
 
     public class Weather
     {
-        public int id { get; set; }
-        public string main { get; set; }
-        public string description { get; set; }
-        public string icon { get; set; }
+        public int Id { get; set; }
+        public string Main { get; set; }
+        public string Description { get; set; }
+        public string Icon { get; set; }
     }
 
     public class Main
@@ -55,32 +58,49 @@ namespace Drakais.OpenWeatherMapApi
         public double? MaxTemperature { get; set; }
         [JsonProperty("humidity")]
         public int Humidity { get; set; }
+        public double? sea_level { get; set; }
+        public double? grnd_level { get; set; }
+        public double? temp_kf { get; set; }
+
     }
 
     public class Wind
     {
-        public double speed { get; set; }
-        public double? gust { get; set; }
-        public double deg { get; set; }
+        public double Speed { get; set; }
+        public double? Gust { get; set; }
+        public double Deg { get; set; }
     }
 
     public class Clouds
     {
-        public int all { get; set; }
+        public int All { get; set; }
     }
 
     public class WeatherInfo
     {
-        public Coordinates coord { get; set; }
+        [JsonProperty("coord")]
+        public Coordinates Coordinates { get; set; }
         public Sys sys { get; set; }
-        public List<Weather> weather { get; set; }
-        public string @base { get; set; }
-        public Main main { get; set; }
-        public Wind wind { get; set; }
-        public Clouds clouds { get; set; }
-        public int dt { get; set; }
-        public int id { get; set; }
-        public string name { get; set; }
-        public int cod { get; set; }
+
+        public List<Weather> Weather { get; set; }
+
+        [JsonProperty("base")]
+        public string Base { get; set; }
+
+        public Main Main { get; set; }
+
+        public Wind Wind { get; set; }
+
+        public Clouds Clouds { get; set; }
+
+        [JsonProperty("dt"), JsonConverter(typeof(Epoch2DateTime))]
+        public DateTime Timestamp { get; set; }
+
+        public int Id { get; set; }
+        
+        public string Name { get; set; }
+
+        [JsonProperty("cod")]
+        public int Code { get; set; }
     }
 }
