@@ -10,7 +10,7 @@ namespace OpenWeatherMapApiTest
         OpenWeatherMapApiClient client;
 
         [TestInitialize]
-        public void Initialize()
+        public void Initialize() 
         {
             client = new Drakais.OpenWeatherMapApi.OpenWeatherMapApiClient("http://api.openweathermap.org/data/2.5/", "", Units.Metric);
 
